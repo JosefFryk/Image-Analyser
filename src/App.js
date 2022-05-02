@@ -1,126 +1,85 @@
+import React, { useState } from 'react';
 import './App.css';
-const express = require("express");
-const app = express();
-const multer = require("multer");
-const upload = multer({
-  storage: multer.diskStorage({}),
-  
-  destination: function (req, file, cd) {
-    if (file.fieldname === 'emotion-upload') {
-        cd(null, '/');
-    }
-
-    else if (file.fieldname === 'image-upload') {
-        cd(null, '/');
-    }
-    
-},
-
-filename: function (req, file, cd) {
-  cd(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-},
-
-  fileFilter: (req, file, cb) => {
-    let ext = path.extname(file.originalname);
-    if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png") {
-      cb(new Error("File type is not supported"), false);
-      return;
-    }
-    cb(null, true);
-  },
-});
-
-//MS Specific
-const axios = require("axios").default;
-const async = require("async");
-const fs = require("fs");
-const https = require("https");
-const path = require("path");
-const createReadStream = require("fs").createReadStream;
-const sleep = require("util").promisify(setTimeout);
-const ComputerVisionClient =
-  require("@azure/cognitiveservices-computervision").ComputerVisionClient;
-const ApiKeyCredentials = require("@azure/ms-rest-js").ApiKeyCredentials;
-
-require("dotenv").config({ path: "./config/.env" });
-
-const cloudinary = require("cloudinary").v2;
-
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET,
-});
-
-const key = process.env.MS_COMPUTER_VISION_SUBSCRIPTION_KEY;
-const endpoint =  process.env.MS_COMPUTER_VISION_ENDPOINT;
-
-const computerVisionClient = new ComputerVisionClient(
-  new ApiKeyCredentials({ inHeader: { "Ocp-Apim-Subscription-Key": key } }),
-  endpoint
-);
-
-//Server Setup
-app.set("view engine", "ejs");
-app.use(express.static("public"));
-
-//Routes
-app.get("/", (req, res) => {
-  res.render("index.ejs");
-});
-
-
-////emotion-check/////
-
-
-app.post("/", upload.single("file-to-upload"), async (req, res) => {
-  try {
-    let hotDogCount = 0;
-    // Upload image to cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path);
-    const objectURL = result.secure_url;
-
-    // Analyze a URL image
-    console.log("Analyzing objects in image...", objectURL.split("/").pop());
-
-    const objects = (
-      await computerVisionClient.analyzeImage(objectURL, {
-        visualFeatures: ["Objects"],
-      })
-    ).objects;
-    console.log();
-
-    // Print objects bounding box and confidence
-       function formatTags(object) {
-        return object.map(obj => (`${obj.name} (${obj.confidence.toFixed(2)})`)).join(', ');
-      }
-    
-    function formatRectObjects(rect) {
-      return (
-        `top=${rect.y}`.padEnd(10) +
-        `left=${rect.x}`.padEnd(10) +
-        `bottom=${rect.y + rect.h}`.padEnd(12) +
-        `right=${rect.x + rect.w}`.padEnd(10) +
-        `(${rect.w}x${rect.h})`
-      );
-    }
-
-    res.render("result.ejs", { count: hotDogCount, img: objectURL });
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-app.listen(process.env.PORT || 8000);
-
-
-//////////////////////////////////////////////////
+import { computerVision, isConfigured as ComputerVisionIsConfigured } from './azure';
 
 function App() {
+
+  const [fileSelected, setFileSelected] = useState(null);
+  const [analysis, setAnalysis] = useState(null);
+  const [processing, setProcessing] = useState(false);
+  
+  const handleChange = (e) => {
+    setFileSelected(e.target.value)
+  }
+  const onFileUrlEntered = (e) => {
+
+    // hold UI
+    setProcessing(true);
+    setAnalysis(null);
+
+    computerVision(fileSelected || null).then((item) => {
+      // reset state/form
+      setAnalysis(item);
+      setFileSelected("");
+      setProcessing(false);
+    });
+
+  };
+
+  // Display JSON data in readable format
+  const PrettyPrintJson = (data) => {
+    return (<div><pre>{JSON.stringify(data, null, 2)}</pre></div>);
+  }
+
+  const DisplayResults = () => {
+    return (
+      <div>
+        <h2>Computer Vision Analysis</h2>
+        <div><img src={analysis.URL} height="200" border="1" alt={(analysis.description && analysis.description.captions && analysis.description.captions[0].text ? analysis.description.captions[0].text : "can't find caption")} /></div>
+        {PrettyPrintJson(analysis)}
+      </div>
+    )
+  };
+  
+  const Analyze = () => {
+    return (
+    <div>
+      <h1>Analyze image</h1>
+      {!processing &&
+        <div>
+          <div>
+            <label>URL</label>
+            <input type="text" placeholder="Enter URL or leave empty for random image from collection" size="50" onChange={handleChange}></input>
+          </div>
+          <button onClick={onFileUrlEntered}>Analyze</button>
+        </div>
+      }
+      {processing && <div>Processing</div>}
+      <hr />
+      {analysis && DisplayResults()}
+      </div>
+    )
+  }
+  
+  const CantAnalyze = () => {
+    return (
+      <div>Key and/or endpoint not configured in ./azure.js</div>
+    )
+  }
+  
+  function Render() {
+    const ready = ComputerVisionIsConfigured();
+    if (ready) {
+      return <Analyze />;
+    }
+    return <CantAnalyze />;
+  }
+
   return (
-    <div className="App">
-     
+    <div>
+      {Render()}
     </div>
+    
   );
 }
 
