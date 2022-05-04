@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import './App.css';
 import { computerVision, isConfigured as ComputerVisionIsConfigured } from './azure';
+import Info from './Info'
 
 function App() {
 
   const [fileSelected, setFileSelected] = useState(null);
   const [analysis, setAnalysis] = useState(null);
   const [processing, setProcessing] = useState(false);
+ 
   
   const handleChange = (e) => {
     setFileSelected(e.target.value)
@@ -22,25 +24,30 @@ function App() {
       setAnalysis(item);
       setFileSelected("");
       setProcessing(false);
+     
     });
 
   };
-
+  const info = analysis
+ 
   // Display JSON data in readable format
   const PrettyPrintJson = (data) => {
-    return (<div><pre>{JSON.stringify(data, null, 2)}</pre></div>);
+    return (<div><pre>{JSON.stringify(data, null, 4)}</pre></div>);
   }
-
   const DisplayResults = () => {
     return (
       <div>
         <h2>Computer Vision Analysis</h2>
         <div><img src={analysis.URL} height="200" border="1" alt={(analysis.description && analysis.description.captions && analysis.description.captions[0].text ? analysis.description.captions[0].text : "can't find caption")} /></div>
+       
         {PrettyPrintJson(analysis)}
       </div>
     )
   };
   
+ 
+
+
   const Analyze = () => {
     return (
     <div>
@@ -56,6 +63,7 @@ function App() {
       }
       {processing && <div>Processing</div>}
       <hr />
+      
       {analysis && DisplayResults()}
       </div>
     )
@@ -66,20 +74,32 @@ function App() {
       <div>Key and/or endpoint not configured in ./azure.js</div>
     )
   }
-  
+   
   function Render() {
     const ready = ComputerVisionIsConfigured();
     if (ready) {
-      return <Analyze />;
+      return <Analyze />;        
     }
     return <CantAnalyze />;
   }
 
+  function RenderInfo() {
+
+    if (analysis !== null) {
+      return  <Info
+      info={info}
+    />
+    }
+    return 
+  }
+
   return (
-    <div>
-      {Render()}
-    </div>
-    
+  <div>
+
+    {RenderInfo()}
+     {Render()}
+   
+  </div>
   );
 }
 
