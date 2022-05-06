@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import { computerVision, isConfigured as ComputerVisionIsConfigured } from './azure';
 import Info from './Info'
+import Rectangle from "./Rectangle"
 
 function App() {
 
@@ -34,11 +35,17 @@ function App() {
   const PrettyPrintJson = (data) => {
     return (<div><pre>{JSON.stringify(data, null, 4)}</pre></div>);
   }
+  
+  
   const DisplayResults = () => {
     return (
       <div>
+        <div className='wrapper'>
+          <img src={analysis.URL} className="exampleImg" border="1" alt={(analysis.description && analysis.description.captions && analysis.description.captions[0].text ? analysis.description.captions[0].text : "can't find caption")} />
+          {RenderRectangle()}
+        </div>
         <h2>Computer Vision Analysis</h2>
-        <div><img src={analysis.URL} height="200" border="1" alt={(analysis.description && analysis.description.captions && analysis.description.captions[0].text ? analysis.description.captions[0].text : "can't find caption")} /></div>
+
        
         {PrettyPrintJson(analysis)}
       </div>
@@ -51,6 +58,7 @@ function App() {
   const Analyze = () => {
     return (
     <div>
+      {analysis && DisplayResults()}
       <h1>Analyze image</h1>
       {!processing &&
         <div>
@@ -64,7 +72,6 @@ function App() {
       {processing && <div>Processing</div>}
       <hr />
       
-      {analysis && DisplayResults()}
       </div>
     )
   }
@@ -92,12 +99,26 @@ function App() {
     }
     return 
   }
+  function RenderRectangle() {
+
+    if (analysis !== null) {
+      return  <Rectangle
+      info={info.objects.map((e) => {
+        return e.rectangle
+      } )}
+    />
+    }
+    return 
+  }
+ 
+
 
   return (
   <div>
-
-    {RenderInfo()}
+   
      {Render()}
+    {RenderInfo()}
+
    
   </div>
   );
