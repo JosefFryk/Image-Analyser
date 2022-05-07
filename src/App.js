@@ -36,13 +36,13 @@ function App() {
     return (<div><pre>{JSON.stringify(data, null, 4)}</pre></div>);
   }
   
-  
+  //img + rectangle + json for now
   const DisplayResults = () => {
     return (
       <div>
         <div className='wrapper'>
           <img src={analysis.URL} className="exampleImg" border="1" alt={(analysis.description && analysis.description.captions && analysis.description.captions[0].text ? analysis.description.captions[0].text : "can't find caption")} />
-          {RenderRectangle()}
+          {info.objects.length > 0 ? RenderRectangle() : <p>Object not found</p>}
         </div>
         <h2>Computer Vision Analysis</h2>
 
@@ -103,6 +103,9 @@ function App() {
 
     if (analysis !== null) {
       return  <Rectangle
+      text={info.objects.map((e) => {
+        return e.object
+      } )}
       info={info.objects.map((e) => {
         return e.rectangle
       } )}
