@@ -25,8 +25,7 @@ const DefaultImages = [
     colorURLImage,
     domainURLImage,
     typeURLImage,
-    printedTextSampleURL,
-    multiLingualTextURL,
+  
     //mixedMultiPagePDFURL
 ];
 

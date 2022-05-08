@@ -1,0 +1,16 @@
+
+
+.wrapperInfo {
+    display: grid;
+    grid: repeat(1, 500px) /auto-flow 250px;
+
+}
+
+.wrapperInfo div {
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px;
+    
+
+}
+

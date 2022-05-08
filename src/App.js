@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import './App.css';
 import { computerVision, isConfigured as ComputerVisionIsConfigured } from './azure';
-import Info from './Info'
-import Rectangle from "./Rectangle"
+import Info from './components/Info/Info'
+import Rectangle from "./components/Rectangle"
+import Text from './components/Text'
+
 
 function App() {
 
@@ -30,11 +32,12 @@ function App() {
 
   };
   const info = analysis
+  const textImage = RenderText()
  
   // Display JSON data in readable format
-  const PrettyPrintJson = (data) => {
-    return (<div><pre>{JSON.stringify(data, null, 4)}</pre></div>);
-  }
+  // const PrettyPrintJson = (data) => {
+  //   return (<div><pre>{JSON.stringify(data, null, 4)}</pre></div>);
+  // }
   
   //img + rectangle + json for now
   const DisplayResults = () => {
@@ -42,17 +45,19 @@ function App() {
       <div>
         <div className='wrapper'>
           <img src={analysis.URL} className="exampleImg" border="1" alt={(analysis.description && analysis.description.captions && analysis.description.captions[0].text ? analysis.description.captions[0].text : "can't find caption")} />
-          {info.objects.length > 0 ? RenderRectangle() : <p>Object not found</p>}
+          {info.objects.length > 0 && RenderRectangle()}
         </div>
-        <h2>Computer Vision Analysis</h2>
-
+        
+        <>
+      
+        </>
        
-        {PrettyPrintJson(analysis)}
+        {/* {PrettyPrintJson(analysis)} */}
       </div>
     )
   };
   
- 
+
 
 
   const Analyze = () => {
@@ -95,7 +100,10 @@ function App() {
     if (analysis !== null) {
       return  <Info
       info={info}
+      text = {textImage}
+      
     />
+      
     }
     return 
   }
@@ -113,6 +121,21 @@ function App() {
     }
     return 
   }
+
+  function RenderText() {
+
+    if (analysis !== null) {
+      return  <Text
+      text={info.text.readResults.map((e) => {
+        return e.lines
+      
+     
+      })}
+      />
+    
+    }
+    return 
+  }
  
 
 
@@ -121,6 +144,7 @@ function App() {
    
      {Render()}
     {RenderInfo()}
+   
 
    
   </div>
