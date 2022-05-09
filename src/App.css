@@ -7,3 +7,55 @@
     
     
 }
+
+.wrapperFirstPage {
+
+    display: flex;
+    flex-direction: column;
+    
+    align-items: center;
+
+}
+
+.analyzeBox {
+    width: 550px;
+}
+
+.analyzeBox li {
+    padding-top: 5px;
+}
+
+.limitationBox {
+    width: 550px;
+}
+
+.limitationBox li {
+    padding-top: 5px;
+}
+
+.firstBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inputBox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+.inputBox button {
+    margin-top: 10px;
+    height: 40px;
+    width: 80px;
+    border-radius: 10px;
+
+}
+
+body {
+    height: 100%;
+    min-height: 100vh;
+    background-image: linear-gradient(rgb(235, 235, 235), rgb(164, 134, 235));
+}

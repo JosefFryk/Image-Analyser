@@ -64,9 +64,10 @@ function App() {
     return (
     <div>
       {analysis && DisplayResults()}
+      <div className='firstBox'>
       <h1>Analyze image</h1>
       {!processing &&
-        <div>
+        <div className='inputBox'>
           <div>
             <label>URL</label>
             <input type="text" placeholder="Enter URL or leave empty for random image from collection" size="50" onChange={handleChange}></input>
@@ -76,7 +77,30 @@ function App() {
       }
       {processing && <div>Processing</div>}
       <hr />
-      
+      </div>
+     {!analysis && <div className='wrapperFirstPage'>
+          <div className='analyzeBox'>
+        <h2>What Analyze can do:</h2>
+          <ul>
+            <li>Detect common objects in images and draw rectangle around them</li>
+            <li>Description of image in sentence</li>
+            <li>Select categories for image</li>
+            <li>Find all posible tags fro image</li>
+            <li>Trascribe image with text </li>
+          </ul>
+
+            </div>
+            <div className='limitationBox'>
+        <h2>Limitations</h2>
+        <p>It's important to note the limitations of object detection so you can avoid or mitigate the effects of false negatives (missed objects) and limited detail.</p>
+        <ul>
+          <li>Objects are generally not detected if they're small (less than 5% of the image).</li>
+          <li>Objects are generally not detected if they're arranged closely together (a stack of plates, for example).</li>
+          <li>Objects are not differentiated by brand or product names (different types of sodas on a store shelf, for example). However, you can get brand information from an image by using the Brand detection feature.</li>
+          <li><a href='https://docs.microsoft.com/en-us/azure/cognitive-services/computer-vision/concept-object-detection' target='_blank' rel='noreferrer' >Documentation</a></li>
+        </ul>
+          </div>
+      </div>}
       </div>
     )
   }
