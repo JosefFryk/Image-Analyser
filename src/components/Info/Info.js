@@ -6,9 +6,9 @@ export default function Info(props){
 
 
 
-  console.log(props.info.description.captions[0].text)
+  
 
-
+    const isThereText = props.text.props.text[0].length > 0
     
     return (
 
@@ -61,9 +61,9 @@ export default function Info(props){
         {props.info.description.captions[0].text}
            
        </div>
-
+        {/* Text from image */}
         <div>
-           {props.text ? <div><h2>Text from the image:</h2><>{props.text}</> </div>: <h2>No text found inside image</h2> }
+           {isThereText ? <div><h2>Text:</h2> {props.text} </div>: <h2>No text found inside image</h2> }
            
         </div>
 

@@ -42,7 +42,7 @@ function App() {
   //img + rectangle + json for now
   const DisplayResults = () => {
     return (
-      <div>
+      <div className='wrap'>
         <div className='wrapper'>
           <img src={analysis.URL} className="exampleImg" border="1" alt={(analysis.description && analysis.description.captions && analysis.description.captions[0].text ? analysis.description.captions[0].text : "can't find caption")} />
           {info.objects.length > 0 && RenderRectangle()}

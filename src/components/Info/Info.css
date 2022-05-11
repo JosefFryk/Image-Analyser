@@ -3,6 +3,8 @@
 .wrapperInfo {
     display: grid;
     grid: repeat(1, 500px) /auto-flow 250px;
+    justify-content: center;
+
 
 }
 
@@ -10,6 +12,7 @@
     display: flex;
     flex-direction: column;
     padding: 0 10px;
+    align-items: center;
     
 
 }

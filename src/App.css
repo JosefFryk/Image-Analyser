@@ -1,6 +1,9 @@
 .wrapper {
-    position: relative;
-   
+    position: relative;  
+}
+.wrap {
+    display: flex;
+    justify-content: center;
 }
 
 .exampleImg {
