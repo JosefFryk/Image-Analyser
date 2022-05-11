@@ -9,7 +9,7 @@ export default function Rectangle(props) {
     return(
         <div>
         {props.info.map((element, index)=> {
-            console.log(props.text)
+           // console.log(props.text)
             return (
             
            //not best practice using index, change it in future!!
