@@ -70,7 +70,7 @@ function App() {
         <div className='inputBox'>
           <div>
             <label>URL</label>
-            <input type="text" placeholder="Enter URL or leave empty for random image from collection" size="50" onChange={handleChange}></input>
+            <input type="url" placeholder="Enter URL or leave empty for random image from collection" size="50" onChange={handleChange}></input>
           </div>
           <button onClick={onFileUrlEntered}>Analyze</button>
         </div>
